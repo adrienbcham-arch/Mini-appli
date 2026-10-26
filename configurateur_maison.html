@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f5f3ef">
+<title>Maison Studio — Configurateur</title>
+<style>
+:root{--bg:#f5f3ef;--card:#fff;--ink:#22251f;--muted:#777970;--accent:#667b62;--line:#e8e5de}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{padding:26px 20px 16px;max-width:1100px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{font-size:12px;letter-spacing:.19em;text-transform:uppercase;font-weight:750}.brand span{color:var(--accent)}h1{font-size:clamp(27px,5vw,42px);letter-spacing:-.045em;margin:10px 0 5px;font-weight:650}.intro{color:var(--muted);font-size:14px;margin:0;line-height:1.5}.reset{border:1px solid var(--line);background:white;border-radius:999px;padding:10px 14px;font-size:12px;font-weight:650;color:var(--ink)}
+main{max-width:1100px;margin:auto;padding:0 16px 36px;display:grid;grid-template-columns:minmax(0,1.45fr) minmax(280px,.85fr);gap:16px}
+.preview,.panel{background:var(--card);border:1px solid var(--line);border-radius:24px;overflow:hidden;box-shadow:0 8px 30px #312a1510}.preview-top{display:flex;justify-content:space-between;align-items:center;padding:17px 18px 10px;font-size:12px;font-weight:700}.live{display:flex;align-items:center;gap:7px;color:var(--accent)}.dot{width:7px;height:7px;border-radius:50%;background:#81a176}
+svg{display:block;width:100%;height:auto}.caption{padding:12px 18px 18px;color:var(--muted);font-size:12px;display:flex;justify-content:space-between;gap:12px}
+.panel{padding:20px}.panel h2{font-size:18px;margin:0 0 5px;letter-spacing:-.02em}.sub{font-size:12px;color:var(--muted);margin:0 0 20px;line-height:1.45}.section{border-top:1px solid var(--line);padding:17px 0}.section:first-of-type{border-top:0;padding-top:0}.labelrow{display:flex;justify-content:space-between;align-items:center;margin-bottom:11px;font-size:13px;font-weight:700}.value{font-weight:500;color:var(--muted);font-size:12px}.swatches{display:flex;gap:10px;flex-wrap:wrap}.swatch{width:35px;height:35px;border-radius:50%;border:3px solid white;box-shadow:0 0 0 1px #d8d5cd;position:relative}.swatch[aria-pressed=true]{box-shadow:0 0 0 2px var(--accent)}.swatch[aria-pressed=true]:after{content:"✓";position:absolute;inset:0;display:grid;place-items:center;font-size:13px;font-weight:800;color:#25271f;text-shadow:0 1px 3px #fff}.chips{display:flex;gap:7px;flex-wrap:wrap}.chip{border:1px solid var(--line);background:white;border-radius:12px;padding:10px 12px;font-size:12px;color:var(--ink)}.chip[aria-pressed=true]{border-color:var(--accent);background:#edf1e9;color:#3f563d;font-weight:700}input[type=range]{width:100%;accent-color:var(--accent)}.rangeends{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;margin-top:4px}.summary{background:#f5f6f1;border-radius:16px;padding:14px;margin-top:7px}.summary-title{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:750}.summary-main{font-size:16px;font-weight:700;margin-top:5px}.summary p{font-size:12px;line-height:1.5;color:var(--muted);margin:5px 0 0}.save{width:100%;border:0;background:var(--accent);color:white;border-radius:14px;padding:14px;font-weight:750;font-size:14px;margin-top:12px}.toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,20px);opacity:0;background:#20251f;color:white;border-radius:999px;padding:12px 18px;font-size:13px;transition:.25s;pointer-events:none;box-shadow:0 8px 24px #0002}.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:760px){header{padding:23px 17px 15px}main{grid-template-columns:1fr;padding:0 12px 26px;gap:12px}.preview,.panel{border-radius:21px}.panel{padding:18px}.preview-top{padding:15px 16px 8px}.caption{padding:10px 16px 15px}.reset{padding:9px 11px} }
+</style>
+</head>
+<body>
+<header>
+ <div><div class="brand">MAISON <span>STUDIO</span></div><h1>Imagine ton intérieur.</h1><p class="intro">Un espace à toi, jusque dans les détails.</p></div>
+ <button class="reset" id="reset">↺ Réinitialiser</button>
+</header>
+<main>
+ <section class="preview">
+  <div class="preview-top"><span>APERÇU DE LA PIÈCE</span><span class="live"><i class="dot"></i> En direct</span></div>
+  <svg id="room" viewBox="0 0 720 520" role="img" aria-label="Illustration d'un salon personnalisable">
+   <defs>
+    <linearGradient id="wallShade" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity=".20"/><stop offset="1" stop-color="#000000" stop-opacity=".07"/></linearGradient>
+    <linearGradient id="floorShade" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ffffff" stop-opacity=".10"/><stop offset="1" stop-color="#000000" stop-opacity=".08"/></linearGradient>
+    <linearGradient id="windowGlow" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f8f3dc"/><stop offset="1" stop-color="#a9c6c6"/></linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="170%"><feGaussianBlur stdDeviation="8"/></filter>
+   </defs>
+   <rect width="720" height="520" fill="#f8f7f2"/>
+   <polygon id="backwall" points="80,52 640,52 640,340 80,340" fill="#e7dfd0"/>
+   <polygon points="80,52 640,52 640,340 80,340" fill="url(#wallShade)"/>
+   <polygon id="leftwall" points="80,52 180,112 180,390 80,340" fill="#d8d0c1"/>
+   <polygon id="floor" points="80,340 640,340 710,478 10,478" fill="#c4ad91"/>
+   <polygon points="80,340 640,340 710,478 10,478" fill="url(#floorShade)"/>
+   <g id="floorLines" stroke="#6d5b48" stroke-opacity=".20" stroke-width="2"><path d="M110 360L55 478M190 360L170 478M270 360L285 478M350 360L400 478M430 360L515 478M510 360L630 478M590 360L690 478"/><path d="M60 382H660M38 424H682"/></g>
+   <!-- window -->
+   <g id="window">
+    <rect x="118" y="88" width="150" height="175" rx="2" fill="#8e9b91"/>
+    <rect x="126" y="96" width="134" height="159" fill="url(#windowGlow)"/>
+    <path d="M126 213L165 161L196 195L225 146L260 192V255H126Z" fill="#94b5a3" opacity=".8"/>
+    <path d="M126 227L167 205L202 223L238 196L260 213V255H126Z" fill="#6e9982" opacity=".8"/>
+    <path d="M193 96V255M126 176H260" stroke="#f8f5e9" stroke-width="7"/>
+    <rect x="110" y="80" width="166" height="9" rx="2" fill="#f7f3eb"/>
+    <rect x="110" y="262" width="166" height="8" rx="2" fill="#c5b7a1"/>
+   </g>
+   <!-- framed art -->
+   <g id="art">
+    <rect x="433" y="94" width="123" height="145" rx="2" fill="#f6f0e3" stroke="#b5a58d" stroke-width="6"/>
+    <rect x="444" y="105" width="101" height="123" fill="#d4d9c7"/>
+    <circle cx="497" cy="151" r="28" fill="#c7a47e"/>
+    <path d="M450 213Q478 167 505 203T540 190V228H444Z" fill="#7e9176"/>
+    <path d="M455 220L487 180L510 220" fill="none" stroke="#f4e9d3" stroke-width="4"/>
+   </g>
+   <!-- plant -->
+   <g id="plant">
+    <path d="M85 352L78 292M85 347L52 310M82 328L103 295M80 312L67 279M87 323L113 320" stroke="#59775b" stroke-width="5" stroke-linecap="round" fill="none"/>
+    <ellipse cx="56" cy="307" rx="9" ry="20" transform="rotate(-42 56 307)" fill="#7d9b77"/>
+    <ellipse cx="104" cy="296" rx="10" ry="22" transform="rotate(38 104 296)" fill="#668965"/>
+    <ellipse cx="67" cy="279" rx="8" ry="19" transform="rotate(-20 67 279)" fill="#8aa27a"/>
+    <ellipse cx="113" cy="320" rx="9" ry="20" transform="rotate(75 113 320)" fill="#527652"/>
+    <path d="M55 345L115 345L108 395Q85 408 62 395Z" fill="#b96f51"/>
+    <ellipse cx="85" cy="346" rx="30" ry="7" fill="#d58b68"/>
+   </g>
+   <!-- rug -->
+   <ellipse cx="390" cy="414" rx="220" ry="55" fill="#55483c" opacity=".14"/>
+   <path id="rug" d="M180 370L535 370L615 450L120 450Z" fill="#ded6c8"/>
+   <path d="M196 379L525 379L588 440L143 440Z" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="2"/>
+   <!-- sofa shadow -->
+   <ellipse cx="385" cy="386" rx="175" ry="27" fill="#3e342b" opacity=".19" filter="url(#shadow)"/>
+   <!-- sofa back and arms -->
+   <g id="sofa">
+    <path d="M252 292Q252 273 273 273H475Q495 273 495 295V353H252Z" fill="#78816d"/>
+    <rect x="238" y="321" width="270" height="67" rx="19" fill="#737e68"/>
+    <rect x="229" y="309" width="42" height="76" rx="15" fill="#89937b"/>
+    <rect x="478" y="309" width="42" height="76" rx="15" fill="#65745f"/>
+    <path d="M272 300Q272 290 286 290H350Q362 290 362 302V341H272Z" fill="#929b82"/>
+    <path d="M367 302Q367 290 381 290H450Q464 290 464 303V341H367Z" fill="#858f75"/>
+    <path d="M272 345H475" stroke="#5b6653" stroke-width="3" opacity=".5"/>
+    <rect x="263" y="383" width="13" height="21" rx="3" fill="#584b3e"/><rect x="483" y="383" width="13" height="21" rx="3" fill="#584b3e"/>
+   </g>
+   <!-- cushions -->
+   <g id="cushions">
+    <path d="M284 301L321 297L331 333L292 339Z" fill="#d7b58c"/>
+    <path d="M420 298L455 304L449 339L414 333Z" fill="#f0e8d8"/>
+   </g>
+   <!-- coffee table -->
+   <ellipse cx="387" cy="429" rx="87" ry="15" fill="#443a2e" opacity=".15"/>
+   <path d="M317 392L457 392L435 432L338 432Z" fill="#a77a50"/>
+   <path d="M317 392L457 392L447 401L326 401Z" fill="#c49a6b"/>
+   <path d="M342 429L348 454M431 429L425 454" stroke="#735438" stroke-width="6" stroke-linecap="round"/>
+   <!-- book and vase -->
+   <path d="M367 387L408 387L404 394L363 394Z" fill="#f0e8d8"/><path d="M365 383L406 383L408 387L367 387Z" fill="#6e7c67"/>
+   <path d="M427 378Q418 394 427 400H442Q451 394 442 378Z" fill="#d8c5a5"/><path d="M434 379V363M434 371L424 362M434 369L445 357" stroke="#6e8867" stroke-width="3" stroke-linecap="round"/>
+   <!-- lamp -->
+   <g id="lamp">
+    <path d="M586 331V240" stroke="#8a785e" stroke-width="5"/><path d="M560 240L575 207H602L618 240Z" fill="#d8c6a5"/><ellipse cx="589" cy="241" rx="29" ry="5" fill="#c2ad8d"/><circle cx="589" cy="250" r="5" fill="#f4dba0"/>
+    <path d="M565 340H610L603 354H572Z" fill="#b8a387"/>
+   </g>
+   <rect id="warmOverlay" width="720" height="520" fill="#ffcf82" opacity="0" pointer-events="none"/>
+  </svg>
+  <div class="caption"><span id="captionStyle">Salon contemporain · tons naturels</span><span>Illustration personnalisable</span></div>
+ </section>
+ <aside class="panel">
+  <h2>Personnalise ton espace</h2><p class="sub">Modifie les détails et observe ton salon se transformer en direct.</p>
+  <div class="section"><div class="labelrow"><span>Style de décoration</span></div><div class="chips" id="styles">
+   <button class="chip" data-style="contemporain" aria-pressed="true">Contemporain</button><button class="chip" data-style="minimaliste" aria-pressed="false">Minimaliste</button><button class="chip" data-style="naturel" aria-pressed="false">Naturel</button><button class="chip" data-style="scandinave" aria-pressed="false">Scandinave</button>
+  </div></div>
+  <div class="section"><div class="labelrow"><span>Couleur des murs</span><span class="value" id="wallName">Lin</span></div><div class="swatches" id="walls">
+   <button class="swatch" title="Lin" aria-label="Murs lin" data-color="#e7dfd0" data-name="Lin" style="background:#e7dfd0" aria-pressed="true"></button>
+   <button class="swatch" title="Blanc cassé" aria-label="Murs blanc cassé" data-color="#f1eee6" data-name="Blanc cassé" style="background:#f1eee6" aria-pressed="false"></button>
+   <button class="swatch" title="Vert sauge" aria-label="Murs vert sauge" data-color="#bdc9b6" data-name="Vert sauge" style="background:#bdc9b6" aria-pressed="false"></button>
+   <button class="swatch" title="Bleu brume" aria-label="Murs bleu brume" data-color="#bdcbd1" data-name="Bleu brume" style="background:#bdcbd1" aria-pressed="false"></button>
+   <button class="swatch" title="Terracotta" aria-label="Murs terracotta" data-color="#d5a28c" data-name="Terracotta" style="background:#d5a28c" aria-pressed="false"></button>
+   <button class="swatch" title="Gris doux" aria-label="Murs gris doux" data-color="#d4d3cf" data-name="Gris doux" style="background:#d4d3cf" aria-pressed="false"></button>
+  </div></div>
+  <div class="section"><div class="labelrow"><span>Revêtement du sol</span><span class="value" id="floorName">Chêne naturel</span></div><div class="swatches" id="floors">
+   <button class="swatch" aria-label="Sol chêne naturel" data-color="#c4ad91" data-name="Chêne naturel" style="background:#c4ad91" aria-pressed="true"></button>
+   <button class="swatch" aria-label="Sol chêne clair" data-color="#dfcfb2" data-name="Chêne clair" style="background:#dfcfb2" aria-pressed="false"></button>
+   <button class="swatch" aria-label="Sol noyer" data-color="#8c6d52" data-name="Noyer" style="background:#8c6d52" aria-pressed="false"></button>
+   <button class="swatch" aria-label="Sol béton clair" data-color="#c9c8c1" data-name="Béton clair" style="background:#c9c8c1" aria-pressed="false"></button>
+  </div></div>
+  <div class="section"><div class="labelrow"><span>Couleur du canapé</span><span class="value" id="sofaName">Sauge</span></div><div class="swatches" id="sofas">
+   <button class="swatch" aria-label="Canapé sauge" data-color="#78816d" data-name="Sauge" style="background:#78816d" aria-pressed="true"></button>
+   <button class="swatch" aria-label="Canapé crème" data-color="#d7cbb7" data-name="Crème" style="background:#d7cbb7" aria-pressed="false"></button>
+   <button class="swatch" aria-label="Canapé bleu nuit" data-color="#536777" data-name="Bleu nuit" style="background:#536777" aria-pressed="false"></button>
+   <button class="swatch" aria-label="Canapé brique" data-color="#b96f51" data-name="Brique" style="background:#b96f51" aria-pressed="false"></button>
+   <button class="swatch" aria-label="Canapé anthracite" data-color="#5b5c5a" data-name="Anthracite" style="background:#5b5c5a" aria-pressed="false"></button>
+  </div></div>
+  <div class="section"><div class="labelrow"><span>Ambiance lumineuse</span><span class="value" id="lightName">Naturelle</span></div><input id="light" type="range" min="0" max="100" value="20" aria-label="Intensité de la lumière"><div class="rangeends"><span>Fraîche</span><span>Chaleureuse</span></div></div>
+  <div class="summary"><div class="summary-title">Ton ambiance</div><div class="summary-main" id="summaryMain">Un salon doux et équilibré</div><p id="summaryText">Des matières naturelles et des tons apaisants pour un intérieur facile à vivre.</p></div>
+  <button class="save" id="save">Enregistrer ma combinaison</button>
+ </aside>
+</main>
+<div class="toast" id="toast" role="status"></div>
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const defaults={style:'contemporain',wall:'#e7dfd0',wallName:'Lin',floor:'#c4ad91',floorName:'Chêne naturel',sofa:'#78816d',sofaName:'Sauge',light:20};
+let state={...defaults};
+const styleInfo={
+ contemporain:['Salon contemporain · tons naturels','Un salon doux et équilibré','Des matières naturelles et des tons apaisants pour un intérieur facile à vivre.'],
+ minimaliste:['Salon minimaliste · lignes épurées','Simple, calme et lumineux','Des couleurs sobres, peu de contrastes et une sensation d’espace.'],
+ naturel:['Salon naturel · matières organiques','Une parenthèse de nature','Des teintes végétales et des matières chaleureuses pour une ambiance sereine.'],
+ scandinave:['Salon scandinave · lumière douce','Clair, accueillant et cosy','Une palette claire et des accents doux inspirés des intérieurs nordiques.']
+};
+function hexMix(hex,amt){let n=parseInt(hex.slice(1),16),r=(n>>16)+amt,g=((n>>8)&255)+amt,b=(n&255)+amt;r=Math.max(0,Math.min(255,r));g=Math.max(0,Math.min(255,g));b=Math.max(0,Math.min(255,b));return '#'+(1<<24|r<<16|g<<8|b).toString(16).slice(1)}
+function render(){
+ $('#backwall').setAttribute('fill',state.wall);$('#leftwall').setAttribute('fill',hexMix(state.wall,-18));
+ $('#floor').setAttribute('fill',state.floor);$('#rug').setAttribute('fill',state.style==='minimaliste'?'#eeeae2':state.style==='naturel'?'#d3c7b3':state.style==='scandinave'?'#e7e1d5':'#ded6c8');
+ $('#sofa').querySelectorAll('path,rect').forEach(el=>{let f=el.getAttribute('fill');if(['#78816d','#737e68','#89937b','#65745f','#929b82','#858f75'].includes(f))el.setAttribute('fill',state.sofa);});
+ const variants=state.style==='minimaliste'?['#ded7c9','#d1c8b8']:state.style==='naturel'?['#b8a184','#d7c2a1']:state.style==='scandinave'?['#d8cbb4','#f0e8d8']:['#d7b58c','#f0e8d8'];
+ const cushions=$('#cushions').querySelectorAll('path');cushions[0].setAttribute('fill',variants[0]);cushions[1].setAttribute('fill',variants[1]);
+ $('#warmOverlay').setAttribute('opacity',(state.light/100*.20).toFixed(2));
+ $('#lamp').style.opacity=String(.7+state.light/330);
+ $('#wallName').textContent=state.wallName;$('#floorName').textContent=state.floorName;$('#sofaName').textContent=state.sofaName;
+ $('#lightName').textContent=state.light<25?'Naturelle':state.light<60?'Équilibrée':'Chaleureuse';
+ $('#captionStyle').textContent=styleInfo[state.style][0];$('#summaryMain').textContent=styleInfo[state.style][1];$('#summaryText').textContent=styleInfo[state.style][2];
+ $$('#styles .chip').forEach(b=>b.setAttribute('aria-pressed',b.dataset.style===state.style));
+ [['walls',state.wall],['floors',state.floor],['sofas',state.sofa]].forEach(([id,val])=>$$('#'+id+' .swatch').forEach(b=>b.setAttribute('aria-pressed',b.dataset.color===val)));
+}
+function choose(group,key,nameKey){$$('#'+group+' .swatch').forEach(b=>b.addEventListener('click',()=>{state[key]=b.dataset.color;state[nameKey]=b.dataset.name;render()}))}
+choose('walls','wall','wallName');choose('floors','floor','floorName');choose('sofas','sofa','sofaName');
+$$('#styles .chip').forEach(b=>b.addEventListener('click',()=>{state.style=b.dataset.style;render()}));
+$('#light').addEventListener('input',e=>{state.light=+e.target.value;render()});
+$('#reset').addEventListener('click',()=>{state={...defaults};$('#light').value=state.light;render();toast('Décoration réinitialisée')});
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>t.classList.remove('show'),2300)}
+$('#save').addEventListener('click',()=>{try{localStorage.setItem('maison-studio-choice',JSON.stringify(state));toast('Ta combinaison est enregistrée sur cet appareil.')}catch(e){toast('Combinaison prête !')}})
+try{const saved=JSON.parse(localStorage.getItem('maison-studio-choice'));if(saved){state={...defaults,...saved};$('#light').value=state.light}}catch(e){}
+render();
+</script>
+</body>
+</html>
